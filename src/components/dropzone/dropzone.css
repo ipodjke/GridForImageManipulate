@@ -1,0 +1,30 @@
+label {
+  font-size: 30px;
+}
+
+input {
+  width: 40px;
+  margin-right: 16px;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.dropzone {
+  text-align: center;
+  padding: 30px;
+  border: 3px dashed #e20e0e;
+  background-color: #fafafa;
+  color: #6516b3;
+  cursor: pointer;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.selected-file-wrapper {
+  text-align: center;
+}
+
+.selected-file {
+  color: #000;
+  font-weight: bold;
+}
