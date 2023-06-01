@@ -1,6 +1,12 @@
 import "./control.css";
 
-export default function GridControlPanel({ rowSize, setRowSize, onClick }) {
+export default function GridControlPanel({
+  rowSize,
+  setRowSize,
+  onClick,
+  pirntParams,
+  setPrintParams
+}) {
   function handleChange(e) {
     let newRowSize = parseInt(e.target.value, 10);
     if (newRowSize === rowSize) {
@@ -14,7 +20,12 @@ export default function GridControlPanel({ rowSize, setRowSize, onClick }) {
       <div className="row">
         <div className="col-3">
           <label>Row size: </label>
-          <input value={rowSize} type="number" onChange={handleChange} />
+          <input
+            value={rowSize}
+            type="number"
+            onChange={handleChange}
+            disabled={true}
+          />
         </div>
         <div className="col">
           <button onClick={onClick}>Send</button>
@@ -22,10 +33,35 @@ export default function GridControlPanel({ rowSize, setRowSize, onClick }) {
           <input
             type="checkbox"
             name="organizationSeal"
-            defaultChecked={true}
+            defaultChecked={pirntParams.seal}
+            onChange={() => {
+              setPrintParams({ ...pirntParams, seal: !pirntParams.seal });
+            }}
           />
           Поставить подписи:
-          <input type="checkbox" name="signature" defaultChecked={true} />
+          <input
+            type="checkbox"
+            name="signature"
+            defaultChecked={pirntParams.signature}
+            onChange={() => {
+              setPrintParams({
+                ...pirntParams,
+                signature: !pirntParams.signature
+              });
+            }}
+          />
+          Версия для печати:
+          <input
+            type="checkbox"
+            name="printOnly"
+            defaultChecked={pirntParams.printOnly}
+            onChange={() => {
+              setPrintParams({
+                ...pirntParams,
+                printOnly: !pirntParams.printOnly
+              });
+            }}
+          />
         </div>
       </div>
     </div>

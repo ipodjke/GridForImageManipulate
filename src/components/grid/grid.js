@@ -12,6 +12,12 @@ export default function Grid() {
   const [files, setFiles] = useState([]);
   const [changeFiles, setChangeFiles] = useState(false);
   const [changeLayouts, setChangeLayouts] = useState(false);
+  const [pirntParams, setPrintParams] = useState({
+    seal: true,
+    signature: true,
+    printOnly: false
+  });
+  const gridRef = useRef(null);
 
   const makeLayouts = useCallback(() => {
     if (changeFiles) {
@@ -42,38 +48,31 @@ export default function Grid() {
   }, [rowSize, changeFiles, changeLayouts]);
 
   let layouts = makeLayouts();
+
   const gridItems = layouts.slice(1).map((element) => (
     <div key={element.i} className="container">
       <Block element={element} onClick={handleDelete} />
     </div>
   ));
 
-  function onDragStop(newLayouts, objectFrom) {
-    let newFiles = new Array(newLayouts.length - 1);
+  function handleClick(e) {
+    let newFiles = new Array(layouts.length - 1);
     let copyFiles = [...files];
     for (let index = 1; index < files.length + 1; index++) {
       let idx =
-        ((newLayouts[index].y +
-          1 +
-          HeightMoveBlock * (1 - HeightControlBlock)) /
+        ((layouts[index].y + 1 + HeightMoveBlock * (1 - HeightControlBlock)) /
           HeightMoveBlock) *
         rowSize;
-
-      newFiles[Math.floor(idx + newLayouts[index].x)] =
-        copyFiles[parseInt(newLayouts[index].i, 10) - 1];
+      newFiles[Math.floor(idx) + layouts[index].x] =
+        copyFiles[parseInt(layouts[index].i, 10) - 1];
     }
-    setFiles(newFiles.filter(Boolean));
+    console.log(newFiles.filter(Boolean));
+    console.log(pirntParams);
   }
-
-  function handleClick(e) {
-    console.log(files);
-  }
-
-  const inputRef = useRef(null);
 
   function handleDelete(e) {
     setFiles(files.filter((file) => file !== files[e.target.value]));
-    let gridLayout = [...inputRef.current.state.layout];
+    let gridLayout = [...gridRef.current.state.layout];
     for (let i = 1; i < layouts.length; i++) {
       layouts[i].x = gridLayout[i].x;
       layouts[i].y = gridLayout[i].y;
@@ -85,6 +84,14 @@ export default function Grid() {
     );
   }
 
+  function onLayoutChange(newLayouts) {
+    for (let i = 1; i < layouts.length; i++) {
+      layouts[i].x = newLayouts[i].x;
+      layouts[i].y = newLayouts[i].y;
+    }
+    setChangeLayouts(layouts);
+  }
+
   return (
     <GridLayout
       className="layout"
@@ -92,10 +99,10 @@ export default function Grid() {
       cols={rowSize}
       compactType="vertical"
       isResizable={false}
-      onDragStop={onDragStop}
+      onLayoutChange={onLayoutChange}
       rowHeight={110}
       width={1140}
-      ref={inputRef}
+      ref={gridRef}
     >
       <div key="0">
         <DropZone setFiles={setFiles} setChangeFiles={setChangeFiles} />
@@ -103,6 +110,8 @@ export default function Grid() {
           rowSize={rowSize}
           setRowSize={setRowSize}
           onClick={handleClick}
+          pirntParams={pirntParams}
+          setPrintParams={setPrintParams}
         />
       </div>
       {gridItems}
